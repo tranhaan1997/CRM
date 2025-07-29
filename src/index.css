@@ -1,0 +1,10 @@
+:root {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+}
+
+img {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
