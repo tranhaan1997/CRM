@@ -5,7 +5,7 @@ import CallbackAuth from "./CallbackAuth";
 import Users from "./pages/Settings/Users";
 import Departments from "./pages/Settings/Departments";
 import Positions from "./pages/Settings/Positions";
-import Provinces from "./pages/Settings/Provinces";
+import Provinces from "./pages/Settings/Provinces/Provinces";
 import Wards from "./pages/Settings/Wards";
 import Streets from "./pages/Settings/Streets";
 import RequireAuth from "./pages/RequireAuth";
