@@ -1,78 +1,58 @@
 import { Box, Typography } from "@mui/material";
 import MainLayout from "~/components/Layout/MainLayout";
 import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
+import { useAppContext } from "~/AppContext";
 import Button from "@mui/material/Button";
+import { useDispatch, useSelector } from "react-redux";
+import Chip from "@mui/material/Chip";
+import { Province_Getlist } from "~/redux/Catalogs/provinceSlice";
+import { useEffect } from "react";
 
 function Provinces() {
+  const { header } = useAppContext();
+  const dispatch = useDispatch();
+  const items = useSelector((state) => state.province?.items);
+
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "firstName", headerName: "First name", width: 130 },
-    { field: "lastName", headerName: "Last name", width: 130 },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 90,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
+      field: "index",
+      headerName: "#",
+      width: 50,
       sortable: false,
-      width: 160,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        const index = params.api.getRowIndexRelativeToVisibleRows(params.id);
+        const page = params.api.state.pagination.paginationModel.page; // page hiện tại (0-based)
+        const pageSize = params.api.state.pagination.paginationModel.pageSize;
+        return index != null ? index + 1 + page * pageSize : "";
+      },
+    },
+    { field: "PROV_NAME", headerName: "Tên tỉnh", width: 300 },
+    { field: "PROV_UNSIGNNAME", headerName: "Tên viết tắt", width: 300 },
+    {
+      field: "STAT_NAME",
+      headerName: "Trạng thái",
+      width: 200,
+      renderCell: (params) => {
+        const value = params.row.STAT_ID;
+        const name = params.row.STAT_NAME;
+        let color = "default";
+        if (value === "ENABLE") {
+          color = "success";
+        } else if (value === "DISABLE") {
+          color = "warning";
+        }
+        return (
+          <Chip label={name} variant="outlined" color={color} size="small" />
+        );
+      },
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+  useEffect(() => {
+    dispatch(Province_Getlist());
+  }, [dispatch]);
 
   const paginationModel = { page: 0, pageSize: 20 };
 
@@ -83,6 +63,7 @@ function Provinces() {
           sx={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           <Typography variant="h6" gutterBottom>
@@ -90,17 +71,16 @@ function Provinces() {
           </Typography>
           <Button variant="contained">Thêm mới</Button>
         </Box>
-        <Box sx={{ mt: 1, border: "1px solid black" }}>
-          <Paper sx={{ height: "600px", width: "100%" }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{ pagination: { paginationModel } }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-              sx={{ border: 0 }}
-            />
-          </Paper>
+        <Box sx={{ height: "780px", mt: 1, border: "1px solid black" }}>
+          <DataGrid
+            rows={items || []}
+            columns={columns}
+            getRowId={(row) => row.PROV_ID}
+            initialState={{ pagination: { paginationModel } }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection
+            sx={{ border: 0 }}
+          />
         </Box>
       </Box>
     </MainLayout>
