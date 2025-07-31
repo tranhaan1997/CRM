@@ -116,6 +116,7 @@ function Provinces() {
             Thêm mới
           </Button>
         </Box>
+
         <Box sx={{ height: "600px", mt: 1, border: "1px solid black" }}>
           <DataGrid
             rows={items || []}
