@@ -20,10 +20,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { agentLocalAPI } from "~/apis/Catalogs/agentLocalAPI";
 import Draggable from "react-draggable";
 import {
-  Province_Getlist,
-  Province_Insert,
-  Province_Update,
-} from "~/redux/Catalogs/provinceSlice";
+  Street_Getlist,
+  Street_Insert,
+  Street_Update,
+} from "~/redux/Catalogs/streetSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
@@ -43,19 +43,20 @@ function DraggablePaper(props) {
   );
 }
 
-function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
+function StreetIUpdateModal({ addNew, selectedItem, open, onClose }) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [formAction, setFormAction] = useState(true);
   const [localList, setLocalList] = useState([]);
-  const [PROV_ID, setPROV_ID] = useState(0);
-  const [PROV_NAME, setPROV_NAME] = useState("");
-  const [PROV_UNSIGNNAME, setPROV_UNSIGNNAME] = useState("");
+  const [LAGNT_ID, setLAGNT_ID] = useState(0);
+  const [STRT_NAME, setSTRT_NAME] = useState("");
+  const [STRT_UNSIGNNAME, setSTRT_UNSIGNNAME] = useState("");
+  const [STRT_CODE, setSTRT_CODE] = useState("");
   const [STAT_ID, setSTAT_ID] = useState("ENABLE");
 
   const handleSaveClose = async () => {
     // kiểm tra nhập liệu
-    if (!PROV_NAME.trim()) {
+    if (!STRT_NAME.trim()) {
       toast.warn("Chưa nhập tên đường.!");
       return;
     }
@@ -67,7 +68,7 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
 
   const handleSaveAddNew = async () => {
     // kiểm tra nhập liệu
-    if (!PROV_NAME.trim()) {
+    if (!STRT_NAME.trim()) {
       toast.warn("Chưa nhập tên đường.!");
       return;
     }
@@ -75,8 +76,9 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
     await I_Update();
     // clear state
     setFormAction(true);
-    setPROV_NAME("");
-    setPROV_UNSIGNNAME("");
+    setSTRT_NAME("");
+    setSTRT_UNSIGNNAME("");
+    setSTRT_CODE("");
     setSTAT_ID("ENABLE");
   };
   const I_Update = async () => {
@@ -84,12 +86,13 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
     let result;
     if (formAction) {
       postData = {
-        I_PROV_NAME: PROV_NAME,
-        I_PROV_UNSIGNNAME: PROV_UNSIGNNAME,
-        I_PROV_ID: PROV_ID,
+        I_STRT_NAME: STRT_NAME,
+        I_STRT_UNSIGNNAME: STRT_UNSIGNNAME,
+        I_STRT_CODE: STRT_CODE,
+        I_LAGNT_ID: LAGNT_ID,
         I_STAT_ID: STAT_ID,
       };
-      result = await dispatch(Province_Getlist(postData)).unwrap(); // Gọi action thêm mới
+      result = await dispatch(Street_Insert(postData)).unwrap(); // Gọi action thêm mới
       console.log("🚀 ~ handleSaveClose ~ result:", result);
       if (result?.O_RESULT === 1) {
         toast.success("Thêm mới thành công!", {
@@ -97,7 +100,7 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
           autoClose: 3000, // Tự tắt sau 3s
           theme: theme.palette.mode === "dark" ? "dark" : "light", // Đồng bộ theme
         });
-        dispatch(Province_Getlist()); // Tải lại danh sách sau khi thêm
+        dispatch(Street_Getlist()); // Tải lại danh sách sau khi thêm
       } else {
         toast.error("Có lỗi xảy ra! " + result?.O_MESSAGE, {
           position: "bottom-right", // 👈 Hiển thị ở góc dưới bên phải
@@ -108,12 +111,13 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
     } else {
       postData = {
         I_STRT_ID: selectedItem?.STRT_ID,
-        I_PROV_NAME: PROV_NAME,
-        I_PROV_UNSIGNNAME: PROV_UNSIGNNAME,
-        I_PROV_ID: PROV_ID,
+        I_STRT_NAME: STRT_NAME,
+        I_STRT_UNSIGNNAME: STRT_UNSIGNNAME,
+        I_STRT_CODE: STRT_CODE,
+        I_LAGNT_ID: LAGNT_ID,
         I_STAT_ID: STAT_ID,
       };
-      result = await dispatch(Province_Update(postData)).unwrap(); // Gọi action thêm mới
+      result = await dispatch(Street_Update(postData)).unwrap(); // Gọi action thêm mới
       console.log("🚀 ~ handleSaveAddNew ~ result:", result);
       if (result?.O_RESULT === 1) {
         toast.success("Cập nhật thành công!", {
@@ -121,7 +125,7 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
           autoClose: 3000, // Tự tắt sau 3s
           theme: theme.palette.mode === "dark" ? "dark" : "light", // Đồng bộ theme
         });
-        dispatch(Province_Getlist()); // Tải lại danh sách sau khi thêm
+        dispatch(Street_Getlist()); // Tải lại danh sách sau khi thêm
       } else {
         toast.error("Có lỗi xảy ra! " + result?.O_MESSAGE, {
           position: "bottom-right", // 👈 Hiển thị ở góc dưới bên phải
@@ -138,7 +142,7 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
     setLocalList(data);
 
     if (list?.O_DATATABLE?.length > 0) {
-      setPROV_ID(list.O_DATATABLE[0].LAGNT_ID);
+      setLAGNT_ID(list.O_DATATABLE[0].LAGNT_ID);
     }
   };
 
@@ -152,13 +156,15 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
     // state formAction thay đổi sẽ load lại dữ liệu
     console.log("🚀 ~ StreetIUpdateModal ~ formAction:", addNew);
     if (!addNew) {
-      setPROV_ID(selectedItem?.LAGNT_ID);
-      setPROV_NAME(selectedItem?.STRT_NAME);
-      setPROV_UNSIGNNAME(selectedItem?.STRT_UNSIGNNAME);
+      setLAGNT_ID(selectedItem?.LAGNT_ID);
+      setSTRT_NAME(selectedItem?.STRT_NAME);
+      setSTRT_UNSIGNNAME(selectedItem?.STRT_UNSIGNNAME);
+      setSTRT_CODE(selectedItem?.STRT_CODE);
       setSTAT_ID(selectedItem?.STAT_ID);
     } else {
-      setPROV_NAME("");
-      setPROV_UNSIGNNAME("");
+      setSTRT_NAME("");
+      setSTRT_UNSIGNNAME("");
+      setSTRT_CODE("");
       setSTAT_ID("ENABLE");
     }
     // nhận trạng thái ban đầu để form xác định đang thêm hay sửa
@@ -224,19 +230,47 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
       {/* Content */}
       <DialogContent sx={{ pt: 3, pb: 0, px: 3 }}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="local-select-label">Đơn vị</InputLabel>
+            <Select
+              labelId="local-select-label"
+              id="local-select"
+              value={LAGNT_ID}
+              label="Đơn vị"
+              onChange={(event) => {
+                setLAGNT_ID(event.target.value);
+              }}
+            >
+              {localList.length > 0 &&
+                localList?.map((item) => (
+                  <MenuItem key={item.LAGNT_ID} value={item.LAGNT_ID}>
+                    {item.LAGNT_NAME}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+
           <TextField
-            label="Tên tỉnh"
-            value={PROV_NAME}
-            onChange={(e) => setPROV_NAME(e.target.value)}
+            label="Tên đường"
+            value={STRT_NAME}
+            onChange={(e) => setSTRT_NAME(e.target.value)}
             fullWidth
             required
             variant="outlined"
           />
 
           <TextField
-            label="Tên viết tắt"
-            value={PROV_UNSIGNNAME}
-            onChange={(e) => setPROV_UNSIGNNAME(e.target.value)}
+            label="Tên không dấu"
+            value={STRT_UNSIGNNAME}
+            onChange={(e) => setSTRT_UNSIGNNAME(e.target.value)}
+            fullWidth
+            variant="outlined"
+          />
+
+          <TextField
+            label="Mã đường"
+            value={STRT_CODE}
+            onChange={(e) => setSTRT_CODE(e.target.value)}
             fullWidth
             variant="outlined"
           />
@@ -305,4 +339,4 @@ function ProvinceIUpdateModal({ addNew, selectedItem, open, onClose }) {
   );
 }
 
-export default ProvinceIUpdateModal;
+export default StreetIUpdateModal;
