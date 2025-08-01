@@ -70,7 +70,14 @@ function Provinces() {
           >
             Sửa
           </Button>
-          <Button variant="outlined" color="error" size="small">
+          <Button
+            variant="outlined"
+            color="error"
+            size="small"
+            onClick={() => {
+              setSelectedItem(params.row), setOpenDel(true);
+            }}
+          >
             Xóa
           </Button>
         </>

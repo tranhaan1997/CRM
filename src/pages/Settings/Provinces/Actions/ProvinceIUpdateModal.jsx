@@ -214,7 +214,7 @@ function StreetIUpdateModal({ addNew, selectedItem, open, onClose }) {
         }}
       >
         <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-          {formAction ? "Thêm mới đường:" : "Cập nhật đường:"}
+          {formAction ? "Thêm mới đường" : "Cập nhật đường"}
         </Typography>
         <IconButton
           aria-label="close"
