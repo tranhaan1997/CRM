@@ -75,7 +75,8 @@ function Provinces() {
             color="error"
             size="small"
             onClick={() => {
-              setSelectedItem(params.row), setOpenDel(true);
+              setSelectedItem(params.row);
+              setOpenDel(true);
             }}
           >
             Xóa
